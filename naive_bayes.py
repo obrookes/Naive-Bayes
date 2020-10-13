@@ -1,7 +1,7 @@
 import math
 from nltk import FreqDist
 
-class Data:
+class Model:
 
     def __init__(self, documents, cls):
         """ Initialise data class and train model"""
@@ -11,7 +11,7 @@ class Data:
         self.set_vocab()  # A list of words said *without* repition
         self.set_log_prior()
         self.set_big_doc()  # dictionary, value is a list of words with rep
-        self.set_log_liklihood()
+        self.set_log_likelihood()
 
     def set_log_prior(self):
         """ calculate log priors: 
@@ -27,7 +27,7 @@ class Data:
             self.log_prior[c] = math.log(prior, 2)
 
     def display_log_prior(self):
-        print(self._log_prior)
+        print(self.log_prior)
 
     def set_vocab(self):
         """ words from doucments without repition:
@@ -42,8 +42,8 @@ class Data:
                 all_words.append(word)
         self.vocab = set(all_words)
 
-    def display_vocab(self, index):
-        print(self.vocab[:index])
+    def display_vocab(self, index=10):
+        print(list(self.vocab)[:index])
 
     def set_big_doc(self):
         """ all words in class with repitition:
@@ -57,12 +57,12 @@ class Data:
                 if label == c:
                     self._big_doc[c] += doc
 
-    def display_big_doc(self, index):
+    def display_big_doc(self, index=10):
         for c in self._cls:
             print(c, self._big_doc[c][:index])
 
 
-    def set_log_liklihood(self):
+    def set_log_likelihood(self):
         """ calculate log likelihoods:
             - unique_class_words: number of unique words the class
             - bag_of_words: frequence distribution of all words in the class
@@ -87,6 +87,10 @@ class Data:
                 class_log_likelihood[word] = math.log((count / unique_class_words), 2)
 
             self.log_likelihood[c] = class_log_likelihood
+
+    def display_log_likelihood(self, index=10):
+        for c in self._cls:
+            print(c, list(self.log_likelihood[c].items())[:index])
 
 
     def test_doc(self, doc):
