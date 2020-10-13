@@ -66,6 +66,9 @@ class Data:
                     sm[c] += self.log_likelihood[c][word]
         return(max(sm, key=sm.get))
 
+def tokenize(string):
+    string = string.lower()
+    return string.split(' ')
 
 def run():
 
@@ -97,6 +100,8 @@ def run():
     print("obama test")
     print(foo.test_doc(obama_test))
 
+    print('trying to be trump')
+    print(foo.test_doc(tokenize('We are humbled sacrafice')))
 
 if __name__ == '__main__':
     run()
