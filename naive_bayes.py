@@ -10,8 +10,10 @@ class Data:
 
     def __init__(self, documents, cls):
         self._documents = documents
-        self._labels = cls
-        self._logprior = {}
+        self._cls = cls
+        self.log_prior = {}
+        self.set_vocab()
+        self.set_log_prior()
         # logliklihood for each word for each class
 
     def set_vocab(self):
@@ -22,11 +24,12 @@ class Data:
                 all_words.append(word)
         self.vocab = set(all_words)
 
-    def set_log_prior(self, training_set, c):
-        n_doc = len(training_set)
-        n_c = len([data for data in labelled_data if t[1] == c])
-        prior = n_c / n_doc
-        self.logprior[c] = math.log(prior, 2)
+    def set_log_prior(self):
+        n_doc = len(self._documents)
+        for c in self._cls:
+            n_c = len([doc for doc in self._documents if doc[1] == c])
+            prior = n_c / n_doc
+            self.log_prior[c] = math.log(prior, 2)
 
 
 
@@ -41,8 +44,7 @@ if __name__ == '__main__':
     labelled_data = labelled_obama + labelled_trump
     
     foo = Data(labelled_data, cls)
-    foo.set_vocab()
-    print(foo.vocab)
+    print(foo.log_prior)
 
 if __name__ == "__maain__":
 
