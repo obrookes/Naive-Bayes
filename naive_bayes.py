@@ -8,6 +8,7 @@ class Model:
         self._documents = documents
         self._cls = cls
 
+    def train(self):
         self.set_vocab()  # A list of words said *without* repition
         self.set_log_prior()
         self.set_big_doc()  # dictionary, value is a list of words with rep
@@ -107,3 +108,9 @@ class Model:
                 if word in self.vocab:
                     sm[c] += self.log_likelihood[c][word]
         return(max(sm, key=sm.get))
+
+
+def tokenize(string):
+    string = string.lower()
+    return string.split(' ')
+
