@@ -16,6 +16,13 @@ class Data:
         self.set_log_prior()
         # logliklihood for each word for each class
 
+    def set_log_prior(self):
+        n_doc = len(self._documents)
+        for c in self._cls:
+            n_c = len([doc for doc in self._documents if doc[1] == c])
+            prior = n_c / n_doc
+            self.log_prior[c] = math.log(prior, 2)
+
     def set_vocab(self):
         all_words = []
         for pair in self._documents:
@@ -23,13 +30,6 @@ class Data:
             for word in document:
                 all_words.append(word)
         self.vocab = set(all_words)
-
-    def set_log_prior(self):
-        n_doc = len(self._documents)
-        for c in self._cls:
-            n_c = len([doc for doc in self._documents if doc[1] == c])
-            prior = n_c / n_doc
-            self.log_prior[c] = math.log(prior, 2)
 
 
 
