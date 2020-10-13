@@ -8,7 +8,6 @@ from nltk import FreqDist
 class Data:
 
     def __init__(self):
-        # big_v : set
         self._logprior = {}
         # logliklihood for each word for each class
 
@@ -18,6 +17,12 @@ class Data:
         n_c = len([data for data in labelled_data if t[label] == c])
         prior = n_c / n_doc
         self._logprior[c] = math.log(prior, 2)
+
+    def set_big_v():
+        obama_words = inaugural.words('2009-Obama.txt')
+        trump_words = inaugural.words('2017-Trump.txt')
+        all_words = obama_words + trump_words
+        self._big_v = set(all_words)
 
 # Dataset
 
