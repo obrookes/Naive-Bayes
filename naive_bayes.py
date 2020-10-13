@@ -5,9 +5,23 @@ import os
 
 from nltk import FreqDist
 
+class Data:
+
+    def __init__(self):
+        # big_v : set
+        self._logprior = {}
+        # logliklihood for each word for each class
+
+    def set_log_prior(self, training_set, c):
+        label = 1
+        n_doc = len(training_set)
+        n_c = len([data for data in labelled_data if t[label] == c])
+        prior = n_c / n_doc
+        self._logprior[c] = math.log(prior, 2)
+
 # Dataset
 
-if __name__ == "__main__":
+if __name__ == "__maain__":
 
     # print(os.listdir(nltk.data.find('corpora')))
     from nltk.corpus import inaugural
