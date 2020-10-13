@@ -61,7 +61,7 @@ class Data:
                 log_likihood = math.log((count / denom), 2)
                 self.log_likelihood[c].append((word, log_likihood))
 
-if __name__ == '__main__':
+def run():
 
     # Dataset generation
     cls = ['Obama', 'Trump']
@@ -71,5 +71,7 @@ if __name__ == '__main__':
     labelled_trump = [(s, cls[1]) for s in trump_sentences]
     labelled_data = labelled_obama + labelled_trump
     
-    foo = Data(labelled_data, cls)
-    print(foo.log_likelihood["Obama"])
+    return Data(labelled_data, cls)
+
+if __name__ == '__main__':
+    run()
