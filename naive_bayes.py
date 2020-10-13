@@ -7,6 +7,7 @@ from nltk.corpus import inaugural
 class Data:
 
     def __init__(self, documents, cls):
+        """ Initialise data class and train model"""
         self._documents = documents
         self._cls = cls
 
@@ -16,6 +17,11 @@ class Data:
         self.set_log_liklihood()
 
     def set_log_prior(self):
+        """ calculate log priors: 
+            - n_doc = total number of documents
+            - n_c = number of documents of particular class
+            - prior = n_c / n_doc 
+            """
         self.log_prior = {}  # The key will be one of the labels
         n_doc = len(self._documents)
         for c in self._cls:
@@ -23,7 +29,15 @@ class Data:
             prior = n_c / n_doc
             self.log_prior[c] = math.log(prior, 2)
 
+    def display_log_prior(self):
+        print(self._log_prior)
+
     def set_vocab(self):
+        """ words from doucments without repition:
+            - pair is a (document, label) tuple
+            - document is an array of strings
+            - set() function removes duplicates
+            """
         all_words = []
         for pair in self._documents:
             document = pair[0]
@@ -31,7 +45,14 @@ class Data:
                 all_words.append(word)
         self.vocab = set(all_words)
 
+    def display_vocab(self, index):
+        print(self.vocab[:index])
+
     def set_big_doc(self):
+        """ all words in class with repitition:
+            - iterate through training set
+            - extract all word occurences for each class
+            """
         self._big_doc = {}
         for c in self._cls:
             self._big_doc[c] = []
@@ -39,25 +60,45 @@ class Data:
                 if label == c:
                     self._big_doc[c] += doc
 
+    def display_big_doc(self, index):
+        for c in self._cls:
+            print(c, self._big_doc[c][:index])
+
+
     def set_log_liklihood(self):
+        """ calculate log likelihoods:
+            - unique_class_words: number of unique words the class
+            - bag_of_words: frequence distribution of all words in the class
+            - try except: in case a word is not used by the class
+            """
         self.log_likelihood = {}
         for c in self._cls:
-            self.log_likelihood[c] = {}
-            denom = 0
-            fd = dict(FreqDist(w.lower() for w in self._big_doc[c]))
+            class_log_likelihood = {}
 
+            # denominator
+            unique_class_words = 0
             for word in self.vocab:
-                denom += (self._big_doc[c].count(word) + 1)
+                unique_class_words += (self._big_doc[c].count(word) + 1)
 
+            bag_of_words = dict(FreqDist(w.lower() for w in self._big_doc[c]))
             for word in self.vocab:
+                # numerator
                 try:
-                    count = fd[word] + 1
+                    count = bag_of_words[word] + 1
                 except KeyError:
                     count = 1
-                log_likelihood = math.log((count / denom), 2)
-                self.log_likelihood[c][word] = log_likelihood
+                class_log_likelihood[word] = math.log((count / unique_class_words), 2)
 
-    def test_doc(self, doc):  # doc is a list of strings
+            self.log_likelihood[c] = class_log_likelihood
+
+
+    def test_doc(self, doc):
+        """ classify document:
+            - doc: tokenised string (document)
+            - assigns a log likelihood to each each token (word)
+            - sums over likelihoods 
+            - maximises over classes to give final classification
+        """
         sm = {}
         for c in self._cls:
             sm[c] = self.log_prior[c]
