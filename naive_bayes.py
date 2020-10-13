@@ -1,10 +1,8 @@
-import numpy as np
-import nltk
 import math
-import os
 
 from nltk import FreqDist
 from nltk.corpus import inaugural
+
 
 class Data:
 
@@ -12,14 +10,13 @@ class Data:
         self._documents = documents
         self._cls = cls
 
-        self.set_vocab() # A list of words said *without* repition
+        self.set_vocab()  # A list of words said *without* repition
         self.set_log_prior()
-        self.set_big_doc() # A dictionary, each value is a list of words said with rep
+        self.set_big_doc()  # dictionary, value is a list of words with rep
         self.set_log_liklihood()
-        # logliklihood for each word for each class
 
     def set_log_prior(self):
-        self.log_prior = {} # The key will be one of the labels
+        self.log_prior = {}  # The key will be one of the labels
         n_doc = len(self._documents)
         for c in self._cls:
             n_c = len([doc for doc in self._documents if doc[1] == c])
@@ -52,7 +49,6 @@ class Data:
             for word in self.vocab:
                 denom += (self._big_doc[c].count(word) + 1)
 
-
             for word in self.vocab:
                 try:
                     count = fd[word] + 1
@@ -61,7 +57,7 @@ class Data:
                 log_likelihood = math.log((count / denom), 2)
                 self.log_likelihood[c][word] = log_likelihood
 
-    def test_doc(self, doc): # doc is a list of strings
+    def test_doc(self, doc):  # doc is a list of strings
         sm = {}
         for c in self._cls:
             sm[c] = self.log_prior[c]
@@ -70,7 +66,6 @@ class Data:
                     sm[c] += self.log_likelihood[c][word]
         return(max(sm, key=sm.get))
 
-            
 
 def run():
 
@@ -81,18 +76,26 @@ def run():
     labelled_obama = [(s, cls[0]) for s in obama_sentences]
     labelled_trump = [(s, cls[1]) for s in trump_sentences]
     labelled_data = labelled_obama + labelled_trump
-    
+
     foo = Data(labelled_data, cls)
 
-    trump_test = ['We', ',', 'the', 'citizens', 'of', 'America', ',', 'are', 'now', 'joined', 'in', 'a', 'great', 'national', 'effort', 'to', 'rebuild', 'our', 'country', 'and', 'restore', 'its', 'promise', 'for', 'all', 'of', 'our', 'people', '.']
+    trump_test = [
+            'We', ',', 'the', 'citizens', 'of', 'America', ',', 'are', 'now',
+            'joined', 'in', 'a', 'great', 'national', 'effort', 'to',
+            'rebuild', 'our', 'country', 'and', 'restore', 'its', 'promise',
+            'for', 'all', 'of', 'our', 'people', '.']
 
-    obama_test = ['I', 'stand', 'here', 'today', 'humbled', 'by', 'the', 'task', 'before', 'us', ',', 'grateful', 'for', 'the', 'trust', 'you', 'have', 'bestowed', ',', 'mindful', 'of', 'the', 'sacrifices', 'borne', 'by', 'our', 'ancestors', '.']
+    obama_test = [
+            'I', 'stand', 'here', 'today', 'humbled', 'by', 'the',
+            'task', 'before', 'us', ',', 'grateful', 'for', 'the', 'trust',
+            'you', 'have', 'bestowed', ',', 'mindful', 'of', 'the',
+            'sacrifices', 'borne', 'by', 'our', 'ancestors', '.']
 
     print("trump test")
-    print(foo.test_doc(trump_test) )
-    
+    print(foo.test_doc(trump_test))
+
     print("obama test")
-    print(foo.test_doc(obama_test) )
+    print(foo.test_doc(obama_test))
 
 
 if __name__ == '__main__':
