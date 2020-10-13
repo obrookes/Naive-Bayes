@@ -8,15 +8,19 @@ from nltk.corpus import inaugural
 
 class Data:
 
-    def __init__(self):
+    def __init__(self, documents, cls):
+        self._documents = documents
+        self._labels = cls
         self._logprior = {}
         # logliklihood for each word for each class
-        self._obama_words = inaugural.words('2009-Obama.txt')
-        self._trump_words = inaugural.words('2017-Trump.txt')
 
-    def set_big_v(self):
-        all_words = self.obama_words + self.trump_words
-        self.big_v = set(all_words)
+    def set_vocab(self):
+        all_words = []
+        for pair in self._documents:
+            document = pair[0]
+            for word in document:
+                all_words.append(word)
+        self.vocab = set(all_words)
 
     def set_log_prior(self, training_set, c):
         n_doc = len(training_set)
@@ -24,12 +28,21 @@ class Data:
         prior = n_c / n_doc
         self.logprior[c] = math.log(prior, 2)
 
-# Dataset
+
 
 if __name__ == '__main__':
-    foo = Data()
-    foo.set_big_v()
-    print(foo.big_v)
+
+    # Dataset generation
+    cls = ['Obama', 'Trump']
+    obama_sentences = inaugural.sents('2009-Obama.txt')
+    trump_sentences = inaugural.sents('2017-Trump.txt')
+    labelled_obama = [(s, cls[0]) for s in obama_sentences]
+    labelled_trump = [(s, cls[1]) for s in trump_sentences]
+    labelled_data = labelled_obama + labelled_trump
+    
+    foo = Data(labelled_data, cls)
+    foo.set_vocab()
+    print(foo.vocab)
 
 if __name__ == "__maain__":
 
