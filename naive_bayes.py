@@ -58,8 +58,8 @@ class Data:
                     count = fd[word] + 1
                 except KeyError:
                     count = 1
-                log_likihood = math.log((count / denom), 2)
-                self.log_likelihood[c].append((word, log_likihood))
+                log_likelihood = math.log((count / denom), 2)
+                self.log_likelihood[c].append((word, log_likelihood))
 
 def run():
 
