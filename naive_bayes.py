@@ -11,19 +11,18 @@ class Data:
     def __init__(self):
         self._logprior = {}
         # logliklihood for each word for each class
+        self._obama_words = inaugural.words('2009-Obama.txt')
+        self._trump_words = inaugural.words('2017-Trump.txt')
 
     def set_big_v(self):
-        obama_words = inaugural.words('2009-Obama.txt')
-        trump_words = inaugural.words('2017-Trump.txt')
-        all_words = obama_words + trump_words
+        all_words = self.obama_words + self.trump_words
         self.big_v = set(all_words)
 
     def set_log_prior(self, training_set, c):
-        label = 1
         n_doc = len(training_set)
-        n_c = len([data for data in labelled_data if t[label] == c])
+        n_c = len([data for data in labelled_data if t[1] == c])
         prior = n_c / n_doc
-        self._logprior[c] = math.log(prior, 2)
+        self.logprior[c] = math.log(prior, 2)
 
 # Dataset
 
