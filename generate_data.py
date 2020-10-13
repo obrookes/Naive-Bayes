@@ -27,10 +27,10 @@ def run():
     model = Model(labelled_data, cls)
     model.train()
 
-    print(model.test_doc(obama_test))
-    print(model.test_doc(trump_test))
-    print(model.test_doc(tokenize('make america great again')))
-    
+    while True:
+        inp = input("Input a string to test: ")
+        doc = tokenize(inp)
+        print(model.test_doc(doc))
 
 if __name__ == '__main__':
     run()
