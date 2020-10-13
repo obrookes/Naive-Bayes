@@ -11,12 +11,14 @@ class Data:
     def __init__(self, documents, cls):
         self._documents = documents
         self._cls = cls
-        self.log_prior = {}
-        self.set_vocab()
+
+        self.set_vocab() # A list of words said *without* repition
         self.set_log_prior()
+        self.set_big_doc()
         # logliklihood for each word for each class
 
     def set_log_prior(self):
+        self.log_prior = {} # The key will be one of the labels
         n_doc = len(self._documents)
         for c in self._cls:
             n_c = len([doc for doc in self._documents if doc[1] == c])
@@ -31,6 +33,13 @@ class Data:
                 all_words.append(word)
         self.vocab = set(all_words)
 
+    def set_big_doc(self):
+        self._big_doc = {}
+        for c in self._cls:
+            self._big_doc[c] = []
+            for doc, label in self._documents:
+                if label == c:
+                    self._big_doc[c] += doc
 
 
 if __name__ == '__main__':
@@ -44,7 +53,6 @@ if __name__ == '__main__':
     labelled_data = labelled_obama + labelled_trump
     
     foo = Data(labelled_data, cls)
-    print(foo.log_prior)
 
 if __name__ == "__maain__":
 
@@ -88,7 +96,7 @@ if __name__ == "__maain__":
     def big_doc(c):
         if c == 'Obama':
             sents = inaugural.sents('2009-Obama.txt')
-        elif c == 'Trump':
+        elif c == 'Trump':
             sents = inaugural.sents('2017-Trump.txt')
 
         return [w for s in sents for w in s]
