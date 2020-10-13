@@ -4,12 +4,19 @@ import math
 import os
 
 from nltk import FreqDist
+from nltk.corpus import inaugural
 
 class Data:
 
     def __init__(self):
         self._logprior = {}
         # logliklihood for each word for each class
+
+    def set_big_v(self):
+        obama_words = inaugural.words('2009-Obama.txt')
+        trump_words = inaugural.words('2017-Trump.txt')
+        all_words = obama_words + trump_words
+        self.big_v = set(all_words)
 
     def set_log_prior(self, training_set, c):
         label = 1
@@ -18,18 +25,16 @@ class Data:
         prior = n_c / n_doc
         self._logprior[c] = math.log(prior, 2)
 
-    def set_big_v():
-        obama_words = inaugural.words('2009-Obama.txt')
-        trump_words = inaugural.words('2017-Trump.txt')
-        all_words = obama_words + trump_words
-        self._big_v = set(all_words)
-
 # Dataset
+
+if __name__ == '__main__':
+    foo = Data()
+    foo.set_big_v()
+    print(foo.big_v)
 
 if __name__ == "__maain__":
 
     # print(os.listdir(nltk.data.find('corpora')))
-    from nltk.corpus import inaugural
     # print(inaugural.fileids())
     # print(inaugural.raw('2009-Obama.txt'))
 
