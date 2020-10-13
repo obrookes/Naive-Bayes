@@ -45,13 +45,13 @@ class Data:
     def set_log_liklihood(self):
         self.log_likelihood = {}
         for c in self._cls:
+            self.log_likelihood[c] = {}
             denom = 0
             fd = dict(FreqDist(w.lower() for w in self._big_doc[c]))
 
             for word in self.vocab:
                 denom += (self._big_doc[c].count(word) + 1)
 
-            self.log_likelihood[c] = [] # list of word: liklihoods
 
             for word in self.vocab:
                 try:
@@ -59,7 +59,18 @@ class Data:
                 except KeyError:
                     count = 1
                 log_likelihood = math.log((count / denom), 2)
-                self.log_likelihood[c].append((word, log_likelihood))
+                self.log_likelihood[c][word] = log_likelihood
+
+    def test_doc(self, doc): # doc is a list of strings
+        sm = {}
+        for c in self._cls:
+            sm[c] = self.log_prior[c]
+            for word in doc:
+                if word in self.vocab:
+                    sm[c] += self.log_likelihood[c][word]
+        return(max(sm, key=sm.get))
+
+            
 
 def run():
 
